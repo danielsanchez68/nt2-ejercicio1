@@ -22,7 +22,7 @@
 
     <br>
     <input type="text" class="form-control" v-model="criterioDeBusquedaDni" placeholder="Ingresar dni...">
-    <div v-if="criterioDeBusquedaDni.length<3" class="alert alert-warning" role="alert">
+    <div v-if="esMenorTres" class="alert alert-warning" role="alert">
         Ingrese al menos 3 caracteres para empezar a filtrar por DNI
     </div>
 

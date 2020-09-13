@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Ejemplo 1</title>
+    <title>TP2 Santiago Serrao</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -14,22 +14,27 @@
 
 
 <div class="container-fluid mt-3" id="app">
-    <input type="text" class="form-control" v-model="criterioDeBusqueda" placeholder="Ingresar un criterio de busqueda...">
+    <input type="text" class="form-control" v-model="busquedaPersona" placeholder="Ingresar un Nombre">
     <br>
-    <div class="card-deck m-0">
-        <div class="row">
-            <div class="col" v-for="persona in personasFiltradas">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
-                        <p class="card-text">dni {{persona.dni}}</p>
-                        <a href="#" class="card-link">{{persona.correo}}</a>
+    <input type="text" class="form-control" v-model="busquedaDni" placeholder="Ingresar DNI">
+    <br>
+        <div class="card-deck m-0" >
+            <div class="row">
+                <div class="col" v-for="persona in personasFiltradas">
+                    <div class="col" v-if="dniFiltrados.includes(persona)" > 
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                                <p class="card-text">dni {{persona.dni}}</p>
+                                <a href="#" class="card-link">{{persona.correo}}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    
+    
 </div>
 
 </html>
@@ -38,7 +43,8 @@
     new Vue({
         el: '#app',
         data: {
-            criterioDeBusqueda: '',
+            busquedaDni : '',
+            busquedaPersona: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas:
                 [
@@ -55,14 +61,27 @@
         computed: {
             personasFiltradas() {
                 return this.personas.filter((persona) => {
-                    let registroCompleto = `${persona.nombre}${persona.apellido}${persona.dni}${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    let registroCompleto = `${persona.nombre}${persona.apellido}`
+                    return registroCompleto.toLowerCase().includes(this.busquedaPersona.toLowerCase())
                 });
+            },
+            dniFiltrados(){
+                return this.personasFiltradas.filter((persona) =>{
+                    let dniBuscado = `${persona.dni}`
+                    return dniBuscado.includes(this.busquedaDni)
+                } )
             }
         },
         methods: {
             getNombreCompleto(persona) {
                 return `${persona.nombre} ${persona.apellido}`
+            },
+            validarCaracter(){
+                const cantCaract = 3
+                let alerta = false
+                if (this.criterioDeBusquedaNombre.length>0 && this.criterioDeBusquedaNombre.length<cantCaract) alerta = true
+                if (this.criterioDeBusquedaDNI.length>0 && this.criterioDeBusquedaDNI.length<cantCaract) alerta = true
+                return alerta
             }
         }
     });

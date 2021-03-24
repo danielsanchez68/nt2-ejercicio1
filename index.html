@@ -14,22 +14,67 @@
 
 
 <div class="container-fluid mt-3" id="app">
-    <input type="text" class="form-control" v-model="criterioDeBusqueda" placeholder="Ingresar un criterio de busqueda...">
+    <input type="text" class="form-control" v-model="criterioDeBusqueda" placeholder="Ingresar un Nombre"> 
+        <div class="col" v-if="criterioDeBusqueda.length < 3 && criterioDeBusqueda != ''">
+            <div class="alert alert-primary" role="alert">
+            El nombre debe ser mayor a 3 caracteres.
+          </div>
+    </div>
+    <input type="text" class="form-control" v-model="criterioDeBusquedaDNI" placeholder="Ingresar un DNI">
+    <div class="col" v-if="criterioDeBusquedaDNI.length < 3 && criterioDeBusquedaDNI != ''">
+        <div class="alert alert-primary" role="alert">
+            El DNI debe ser mayor a 3 caracteres.
+          </div>
+    </div>
     <br>
     <div class="card-deck m-0">
         <div class="row">
-            <div class="col" v-for="persona in personasFiltradas">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
-                        <p class="card-text">dni {{persona.dni}}</p>
-                        <a href="#" class="card-link">{{persona.correo}}</a>
+            <div class="col" v-for="persona in personas">
+                <div class="col" v-if="(criterioDeBusquedaDNI.length < 3) && (criterioDeBusqueda.length >= 3) ">
+                    <div class="col" v-if="(filtroXNombre.includes(persona))">
+                        <div class="card mb-3"> 
+                            <div class="card-body">
+                                <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                                 <p class="card-text">dni {{persona.dni}}</p>
+                                 <a href="#" class="card-link">{{persona.correo}}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                        <div class="col" v-else-if="criterioDeBusqueda.length < 3) && (criterioDeBusquedaDNI.length >= 3">
+                            <div class="col" v-if="(filtroXDNI.includes(persona))">
+                                <div class="card mb-3"> 
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                                         <p class="card-text">dni {{persona.dni}}</p>
+                                         <a href="#" class="card-link">{{persona.correo}}</a>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div> 
+                 <div class="col" v-else-if="(criterioDeBusqueda.length >= 3) && (criterioDeBusquedaDNI.length >= 3)">
+                    <div class="col" v-if="(filtroXNombre.includes(persona)) || (filtroXDNI.includes(persona))">
+                        <div class="card mb-3"> 
+                            <div class="card-body">
+                            <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                            <p class="card-text">dni {{persona.dni}}</p>
+                            <a href="#" class="card-link">{{persona.correo}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" v-else-if="(criterioDeBusqueda.length < 3) && (criterioDeBusquedaDNI.length < 3)">
+                        <div class="card mb-3"> 
+                            <div class="card-body">
+                            <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                            <p class="card-text">dni {{persona.dni}}</p>
+                            <a href="#" class="card-link">{{persona.correo}}</a>
+                            </div>
+                        </div>
+                </div>
             </div>
-        </div>
-    </div>
-
+         </div>
+     </div>
 </div>
 
 </html>
@@ -39,6 +84,7 @@
         el: '#app',
         data: {
             criterioDeBusqueda: '',
+            criterioDeBusquedaDNI: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas:
                 [
@@ -47,17 +93,24 @@
                 ]
         },
         computed: {
-            personasFiltradas() {
+            filtroXNombre() {
                 return this.personas.filter((persona) => {
-                    let registroCompleto = `${persona.nombre}${persona.apellido}${persona.dni}${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
-                });
-            }
+                    let registroCompleto = `${persona.nombre} ${persona.apellido}`
+                    return (registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase()))
+                     })
+        },
+        filtroXDNI() {
+            return this.personas.filter((persona) => {
+                    let registroCompleto2 = `${persona.dni}`
+                    return (registroCompleto2.toLowerCase().includes(this.criterioDeBusquedaDNI.toLowerCase())
+            )})
+                }
         },
         methods: {
             getNombreCompleto(persona) {
                 return `${persona.nombre} ${persona.apellido}`
-            }
+            },
+            
         }
     });
 </script>
